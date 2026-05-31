@@ -13,25 +13,34 @@ log = structlog.get_logger(__name__)
 
 
 def _map_rspo_to_school(raw: dict) -> dict:
-    """Map raw RSPO API response fields to School model kwargs."""
-    address = raw.get("adres", {})
-    coords = raw.get("geolokalizacja") or {}
+    """Map raw Institution API response fields to School model kwargs."""
+    street = raw.get("hqAddressStreet")
+    building = raw.get("hqAddressBuildingNr")
+    premise = raw.get("hqAddressPremiseNr")
+    address_street = " ".join(
+        [p for p in [street, building, premise] if p]
+    ) or None
+
+    website = raw.get("website")
+    if website and not website.startswith(("http://", "https://")):
+        website = f"https://{website}"
+
     return {
-        "rspo_id": str(raw.get("rspo") or raw.get("numerRspo", "")),
-        "name": raw.get("nazwa", ""),
-        "school_type": raw.get("typSzkoly", {}).get("nazwa"),
-        "address_street": address.get("ulica"),
-        "address_city": address.get("miejscowosc"),
-        "address_postcode": address.get("kodPocztowy"),
-        "voivodeship": address.get("wojewodztwo"),
-        "county": address.get("powiat"),
-        "municipality": address.get("gmina"),
-        "latitude": coords.get("szerGeogr"),
-        "longitude": coords.get("dlugGeogr"),
-        "website_url": raw.get("stronaInternetowa"),
-        "phone": raw.get("telefon"),
+        "rspo_id": str(raw.get("rspo") or raw.get("id", "")),
+        "name": raw.get("name", ""),
+        "school_type": (raw.get("type") or {}).get("name"),
+        "address_street": address_street,
+        "address_city": raw.get("hqAddressPostal"),
+        "address_postcode": raw.get("hqAddressZipCode"),
+        "voivodeship": "Mazowieckie",
+        "county": "Warszawa",
+        "municipality": (raw.get("hqAddressLocality") or {}).get("name"),
+        "latitude": None,
+        "longitude": None,
+        "website_url": website,
+        "phone": raw.get("telephone"),
         "email": raw.get("email"),
-        "is_public": raw.get("czyPubliczna"),
+        "is_public": None,
     }
 
 

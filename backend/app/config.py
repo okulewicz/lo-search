@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     # Ollama
     ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "llama3.2"
+    ollama_model: str = "gemma4:latest"
 
     # Transit
     transit_provider: Literal["google_maps", "otp"] = "otp"
@@ -21,7 +21,10 @@ class Settings(BaseSettings):
     otp_base_url: str = "http://localhost:8080/otp/routers/default"
 
     # School registry (RSPO)
-    rspo_api_url: str = "https://api.rspo.gov.pl/v1"
+    rspo_api_url: str = "https://rspo.gov.pl/api"
+    rspo_state_id: int = 7
+    rspo_district_id: int = 178
+    rspo_institution_type_ids: list[int] = [14, 15, 16]
 
     # App
     debug: bool = False
