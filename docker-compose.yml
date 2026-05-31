@@ -90,4 +90,14 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: D:\Users\okule\.postgres-data
+      o: bind
   ollama_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: D:\Users\okule\.ollama
+      o: bind
