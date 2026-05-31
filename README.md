@@ -196,3 +196,40 @@ npm run dev
 | Transit | Open Trip Planner 2 (default) / Google Maps Directions API |
 | School data | RSPO public REST API |
 | Infrastructure | Docker Compose |
+
+User clicks "Sync all schools"
+
+  * → FastAPI responds instantly: {"task_id": "abc-123"}
+  * → Worker does all the heavy work in the background
+  * → User polls GET /api/tasks/status/abc-123 to check progress
+
+
+```
+  ┌─────────────┐   1. POST /api/tasks/run-pipeline
+  │   FastAPI   │──────────────────────────────────►
+  │  (backend)  │   publishes task message to Redis
+  └─────────────┘
+                          ┌─────────┐
+                          │  Redis  │  ← acts as the post-box
+                          │  Queue  │     (broker + result store)
+                          └────┬────┘
+                               │ 2. Worker picks up the message
+                               ▼
+                      ┌────────────────┐
+                      │ Celery Worker  │
+                      │  (worker svc)  │
+                      │                │
+                      │  sync_schools  │ ← calls RSPO API
+                      │  scrape_school │ ← calls Playwright
+                      │  extract_profile│ ← calls Ollama
+                      └────────────────┘
+                               │ 3. Stores result back in Redis
+                               ▼
+                          ┌─────────┐
+                          │  Redis  │
+                          │ Results │
+                          └─────────┘
+                               │ 4. FastAPI reads result on demand
+                               ▼
+                      GET /api/tasks/status/abc-123
+```
