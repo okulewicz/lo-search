@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+.venv/
+env/
+*.env
+
+# Environment
+.env
+!.env.example
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Docker volumes (local dev)
+postgres_data/
+ollama_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Alembic (keep structure, ignore auto-generated revisions you don't want)
+# backend/alembic/versions/*.py  <-- uncomment if needed
+
+# Logs
+*.log
+celerybeat-schedule
+celerybeat.pid
+
+# Playwright cache
+ms-playwright/
