@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     # Ollama
     ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "gemma4:latest"
+    ollama_model: str = "gemma4:e4b"
 
     # Transit
     transit_provider: Literal["google_maps", "otp"] = "otp"
